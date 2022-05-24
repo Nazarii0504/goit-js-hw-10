@@ -12,3 +12,33 @@ const containerRef = document.querySelector('.country-info');
 
 inputRef.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
 
+function onInputChange(e) {
+
+  const searchedCountry = inputRef.value.trim();
+  if (inputRef.value === '') {
+      containerRef.textContent = '';
+      return;
+  }
+  else if(e.data === ' ') {
+      return;
+  }
+  {
+  fetchCountries(`${searchedCountry}`).then(country => {
+      if (country.length > 10 ) {
+          Notify.info("Too many matches found. Please enter a more specific name.");
+      } else if (country.length > 2 & country.length < 10) {
+          const content = flags(country);
+          containerRef.innerHTML = content;
+      } else {
+          const markup = countryList(country);
+          containerRef.innerHTML = markup;
+   }
+  }).catch(() => {
+      Notify.failure("Oops, there is no country with that name");
+  }).finally(() => {
+
+  })
+};
+}
+
+
